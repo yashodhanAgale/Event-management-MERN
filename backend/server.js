@@ -12,8 +12,7 @@ const server = http.createServer(app); // Create HTTP server for WebSockets
 // ✅ CORS Configuration
 const io = new Server(server, {
   cors: {
-    origin:
-      "https://vercel.com/yashodhan-agales-projects/event-management-mern-wfcr", // Allow requests from all origins (or replace with your frontend URL)
+    origin: "https://event-management-mern-wfcr.vercel.app", // Allow requests from all origins (or replace with your frontend URL)
     methods: ["GET", "POST", "UPDATE"],
   },
 });
@@ -24,8 +23,7 @@ connectDB();
 // ✅ Apply CORS Middleware to Express
 app.use(
   cors({
-    origin:
-      "https://vercel.com/yashodhan-agales-projects/event-management-mern-wfcr",
+    origin: "https://event-management-mern-wfcr.vercel.app",
   })
 ); // Allow all origins (or specify your frontend URL)
 app.use(express.json());

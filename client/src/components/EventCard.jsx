@@ -3,7 +3,7 @@ import axios from "axios";
 import io from "socket.io-client";
 import { useAuth } from "../context/AuthContext";
 
-const socket = io("https://event-management-mern-fawn.vercel.app"); // Replace with your backend URL
+const socket = io("https://event-management-mern-wfcr.vercel.app/"); // Replace with your backend URL
 
 const EventCard = ({ event }) => {
   const { user } = useAuth();
