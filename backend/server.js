@@ -27,7 +27,7 @@ app.use(
   cors({
     origin:
       process.env.FRONTEND_URL ||
-      "https://event-management-mern-wfcr.vercel.app",
+      "https://event-management-mern-wfcr.vercel.app/",
   })
 );
 app.use(express.json());
