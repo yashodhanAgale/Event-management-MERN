@@ -1,31 +1,39 @@
 require("dotenv").config();
 const express = require("express");
-const http = require("http"); // Required for WebSockets
+const http = require("http");
 const { Server } = require("socket.io");
 const connectDB = require("./config/db");
-const Event = require("./models/Event"); // Import Event model
+const Event = require("./models/Event");
 const cors = require("cors");
 
 const app = express();
 const server = http.createServer(app); // Create HTTP server for WebSockets
+
+// ✅ CORS Configuration
 const io = new Server(server, {
   cors: {
-    origin: "*", // Allow frontend requests
+    origin: "*", // Allow requests from all origins (or replace with your frontend URL)
+    methods: ["GET", "POST"],
   },
 });
 
 // Connect to Database
 connectDB();
 
-// Middleware
+// ✅ Apply CORS Middleware to Express
+app.use(cors({ origin: "*" })); // Allow all origins (or specify your frontend URL)
 app.use(express.json());
-app.use(cors());
+
+// ✅ Add a simple route to verify deployment
+app.get("/", (req, res) => {
+  res.send("Hello from backend! 🚀");
+});
 
 // Routes
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/events", require("./routes/eventRoutes"));
 
-// WebSocket Logic
+// ✅ WebSockets for Real-Time Updates
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
@@ -36,7 +44,7 @@ io.on("connection", (socket) => {
         io.emit("updateAttendeeCount", {
           eventId,
           count: event.attendees.length,
-        }); // Send correct count
+        });
       }
     } catch (error) {
       console.error("Error updating attendee count:", error);
@@ -50,4 +58,4 @@ io.on("connection", (socket) => {
 
 // Start the server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
