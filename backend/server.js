@@ -9,31 +9,35 @@ const cors = require("cors");
 const app = express();
 const server = http.createServer(app); // Create HTTP server for WebSockets
 
-// ✅ CORS Configuration
+// ✅ Allow CORS for WebSockets & API
 const io = new Server(server, {
   cors: {
-    origin: "https://event-management-mern-wfcr.vercel.app", // Allow requests from all origins (or replace with your frontend URL)
-    methods: ["GET", "POST", "UPDATE"],
+    origin:
+      process.env.FRONTEND_URL ||
+      "https://event-management-mern-wfcr.vercel.app",
+    methods: ["GET", "POST"],
   },
 });
 
-// Connect to Database
+// ✅ Connect to MongoDB
 connectDB();
 
-// ✅ Apply CORS Middleware to Express
+// ✅ Apply CORS Middleware
 app.use(
   cors({
-    origin: "https://event-management-mern-wfcr.vercel.app",
+    origin:
+      process.env.FRONTEND_URL ||
+      "https://event-management-mern-wfcr.vercel.app",
   })
-); // Allow all origins (or specify your frontend URL)
+);
 app.use(express.json());
 
-// ✅ Add a simple route to verify deployment
+// ✅ Test Route to Check Deployment
 app.get("/", (req, res) => {
-  res.send("Hello from backend! 🚀");
+  res.send("Hello from backend! 🚀 WebSockets are working.");
 });
 
-// Routes
+// ✅ API Routes
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/events", require("./routes/eventRoutes"));
 
@@ -60,6 +64,6 @@ io.on("connection", (socket) => {
   });
 });
 
-// Start the server
+// ✅ Start the server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
