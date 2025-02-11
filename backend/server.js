@@ -8,6 +8,8 @@ const cors = require("cors");
 
 const app = express();
 const server = http.createServer(app); // Create HTTP server for WebSockets
+const authRoutes = require("./routes/authRoutes");
+const eventRoutes = require("./routes/eventRoutes");
 
 // ✅ Allow CORS for WebSockets & API
 const io = new Server(server, {
@@ -38,8 +40,8 @@ app.get("/", (req, res) => {
 });
 
 // ✅ API Routes
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/events", require("./routes/eventRoutes"));
+app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);
 
 // ✅ WebSockets for Real-Time Updates
 io.on("connection", (socket) => {
