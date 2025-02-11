@@ -296,6 +296,88 @@
 // const PORT = process.env.PORT || 5000;
 // server.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 
+// require("dotenv").config();
+// const express = require("express");
+// const http = require("http");
+// const { Server } = require("socket.io");
+// const connectDB = require("./config/db");
+// const cors = require("cors");
+// const bodyParser = require("body-parser");
+
+// const app = express();
+// const server = http.createServer(app);
+
+// // ✅ Set Allowed Frontend URLs
+// const allowedOrigins = [
+//   "https://event-management-mern-wfcr.vercel.app", // ✅ Your Frontend
+//   "https://event-management-mern-qbw3.onrender.com", // ✅ Your Backend
+// ];
+
+// // ✅ Fix CORS Issues
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     credentials: true,
+//   })
+// );
+
+// // ✅ Handle Preflight Requests (OPTIONS)
+// app.options("*", (req, res) => {
+//   res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Content-Type, Authorization, X-Requested-With"
+//   );
+//   res.header("Access-Control-Allow-Credentials", "true");
+//   return res.sendStatus(200);
+// });
+
+// app.use(express.json());
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+
+// // ✅ Connect to MongoDB
+// connectDB();
+
+// // ✅ Test Route
+// app.get("/", (req, res) => {
+//   res.send("Hello from backend! 🚀 WebSockets are working.");
+// });
+
+// // ✅ Import Routes
+// const authRoutes = require("./routes/authRoutes");
+// const eventRoutes = require("./routes/eventRoutes");
+
+// app.use("/api/auth", authRoutes);
+// app.use("/api/events", eventRoutes);
+
+// // ✅ WebSockets with CORS Fix
+// const io = new Server(server, {
+//   cors: {
+//     origin: allowedOrigins,
+//     methods: ["GET", "POST"],
+//   },
+// });
+
+// io.on("connection", (socket) => {
+//   console.log("A user connected:", socket.id);
+//   socket.on("disconnect", () => {
+//     console.log("User disconnected:", socket.id);
+//   });
+// });
+
+// // ✅ Start Server
+// const PORT = process.env.PORT || 5000;
+// server.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
 require("dotenv").config();
 const express = require("express");
 const http = require("http");
@@ -307,19 +389,19 @@ const bodyParser = require("body-parser");
 const app = express();
 const server = http.createServer(app);
 
-// ✅ Set Allowed Frontend URLs
+// ✅ Allowed Frontend URL
 const allowedOrigins = [
-  "https://event-management-mern-wfcr.vercel.app", // ✅ Your Frontend
-  "https://event-management-mern-qbw3.onrender.com", // ✅ Your Backend
+  process.env.FRONTEND_URL, // ✅ Load frontend URL from .env
+  "https://event-management-mern-qbw3.onrender.com", // ✅ Your Backend URL
 ];
 
-// ✅ Fix CORS Issues
 app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.log("❌ Blocked by CORS:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
@@ -328,7 +410,7 @@ app.use(
   })
 );
 
-// ✅ Handle Preflight Requests (OPTIONS)
+// ✅ Handle Preflight (OPTIONS) Requests
 app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -340,6 +422,7 @@ app.options("*", (req, res) => {
   return res.sendStatus(200);
 });
 
+// ✅ Middleware
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
