@@ -7,7 +7,7 @@ const CreateEvent = () => {
   // const API_URL = import.meta.env.VITE_API_URL;
   const API_URL =
     import.meta.env.VITE_API_URL ||
-    "https://event-management-mern-wfcr.vercel.app/"; // Fallback
+    "https://event-management-mern-six.vercel.app/"; // Fallback
 
   const { user } = useAuth();
   const navigate = useNavigate();
