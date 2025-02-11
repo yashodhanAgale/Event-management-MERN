@@ -310,7 +310,7 @@ const server = http.createServer(app);
 // ✅ Set Allowed Frontend URLs
 const allowedOrigins = [
   "https://event-management-mern-wfcr.vercel.app", // ✅ Your Frontend
-  "https://event-management-mern-fawn.vercel.app", // ✅ Your Backend
+  "https://event-management-mern-qbw3.onrender.com", // ✅ Your Backend
 ];
 
 // ✅ Fix CORS Issues
