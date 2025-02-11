@@ -16,7 +16,7 @@ const io = new Server(server, {
   cors: {
     origin:
       process.env.FRONTEND_URL ||
-      "https://event-management-mern-wfcr.vercel.app",
+      "https://event-management-mern-qbw3.onrender.com",
     methods: ["GET", "POST"],
   },
 });
