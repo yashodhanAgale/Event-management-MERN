@@ -145,17 +145,94 @@
 // const PORT = process.env.PORT || 5000;
 // server.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 
+// require("dotenv").config();
+// const express = require("express");
+// const http = require("http");
+// const { Server } = require("socket.io");
+// const connectDB = require("./config/db");
+// const cors = require("cors");
+
+// const app = express();
+// const server = http.createServer(app); // Create HTTP server for WebSockets
+
+// // ✅ Set CORS Correctly
+// const allowedOrigins = [
+//   "https://event-management-mern-wfcr.vercel.app", // ✅ Your Frontend URL
+//   "https://event-management-mern-fawn.vercel.app", // ✅ Your Backend API URL
+// ];
+
+// app.use(
+//   cors({
+//     origin: allowedOrigins,
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     credentials: true,
+//   })
+// );
+
+// // ✅ Fix Preflight Request Issue (CORS for ALL Routes)
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", allowedOrigins.join(","));
+//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+//   );
+//   res.header("Access-Control-Allow-Credentials", "true");
+
+//   if (req.method === "OPTIONS") {
+//     return res.sendStatus(200); // ✅ Handle preflight requests
+//   }
+
+//   next();
+// });
+
+// app.use(express.json());
+
+// // ✅ Connect to MongoDB
+// connectDB();
+
+// // ✅ Test Route to Check Deployment
+// app.get("/", (req, res) => {
+//   res.send("Hello from backend! 🚀 WebSockets are working.");
+// });
+
+// // ✅ API Routes
+// const authRoutes = require("./routes/authRoutes");
+// const eventRoutes = require("./routes/eventRoutes");
+
+// app.use("/api/auth", authRoutes);
+// app.use("/api/events", eventRoutes);
+
+// // ✅ WebSockets for Real-Time Updates
+// const io = new Server(server, {
+//   cors: { origin: allowedOrigins, methods: ["GET", "POST"] },
+// });
+
+// io.on("connection", (socket) => {
+//   console.log("A user connected:", socket.id);
+
+//   socket.on("disconnect", () => {
+//     console.log("User disconnected:", socket.id);
+//   });
+// });
+
+// // ✅ Start the server
+// const PORT = process.env.PORT || 5000;
+// server.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
+
 require("dotenv").config();
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const connectDB = require("./config/db");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const app = express();
-const server = http.createServer(app); // Create HTTP server for WebSockets
+const server = http.createServer(app);
 
-// ✅ Set CORS Correctly
+// ✅ Fix CORS Issues
 const allowedOrigins = [
   "https://event-management-mern-wfcr.vercel.app", // ✅ Your Frontend URL
   "https://event-management-mern-fawn.vercel.app", // ✅ Your Backend API URL
@@ -169,24 +246,25 @@ app.use(
   })
 );
 
-// ✅ Fix Preflight Request Issue (CORS for ALL Routes)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", allowedOrigins.join(","));
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    "Content-Type, Authorization, X-Requested-With"
   );
   res.header("Access-Control-Allow-Credentials", "true");
 
   if (req.method === "OPTIONS") {
-    return res.sendStatus(200); // ✅ Handle preflight requests
+    return res.sendStatus(200);
   }
 
   next();
 });
 
-app.use(express.json());
+// ✅ Use Body Parser (Same as Working Backend)
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // ✅ Connect to MongoDB
 connectDB();
@@ -196,26 +274,25 @@ app.get("/", (req, res) => {
   res.send("Hello from backend! 🚀 WebSockets are working.");
 });
 
-// ✅ API Routes
+// ✅ Import Routes
 const authRoutes = require("./routes/authRoutes");
 const eventRoutes = require("./routes/eventRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 
-// ✅ WebSockets for Real-Time Updates
+// ✅ WebSockets (Allow CORS)
 const io = new Server(server, {
   cors: { origin: allowedOrigins, methods: ["GET", "POST"] },
 });
 
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
-
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
 });
 
-// ✅ Start the server
+// ✅ Start Server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
