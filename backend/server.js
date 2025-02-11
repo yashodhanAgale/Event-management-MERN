@@ -220,6 +220,81 @@
 // const PORT = process.env.PORT || 5000;
 // server.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 
+// require("dotenv").config();
+// const express = require("express");
+// const http = require("http");
+// const { Server } = require("socket.io");
+// const connectDB = require("./config/db");
+// const cors = require("cors");
+// const bodyParser = require("body-parser");
+
+// const app = express();
+// const server = http.createServer(app);
+
+// // ✅ Fix CORS Issues
+// const allowedOrigins = [
+//   "https://event-management-mern-wfcr.vercel.app", // ✅ Your Frontend URL
+//   "https://event-management-mern-fawn.vercel.app", // ✅ Your Backend API URL
+// ];
+
+// app.use(
+//   cors({
+//     origin: allowedOrigins,
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     credentials: true,
+//   })
+// );
+
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", allowedOrigins.join(","));
+//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Content-Type, Authorization, X-Requested-With"
+//   );
+//   res.header("Access-Control-Allow-Credentials", "true");
+
+//   if (req.method === "OPTIONS") {
+//     return res.sendStatus(200);
+//   }
+
+//   next();
+// });
+
+// // ✅ Use Body Parser (Same as Working Backend)
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+
+// // ✅ Connect to MongoDB
+// connectDB();
+
+// // ✅ Test Route to Check Deployment
+// app.get("/", (req, res) => {
+//   res.send("Hello from backend! 🚀 WebSockets are working.");
+// });
+
+// // ✅ Import Routes
+// const authRoutes = require("./routes/authRoutes");
+// const eventRoutes = require("./routes/eventRoutes");
+
+// app.use("/api/auth", authRoutes);
+// app.use("/api/events", eventRoutes);
+
+// // ✅ WebSockets (Allow CORS)
+// const io = new Server(server, {
+//   cors: { origin: allowedOrigins, methods: ["GET", "POST"] },
+// });
+
+// io.on("connection", (socket) => {
+//   console.log("A user connected:", socket.id);
+//   socket.on("disconnect", () => {
+//     console.log("User disconnected:", socket.id);
+//   });
+// });
+
+// // ✅ Start Server
+// const PORT = process.env.PORT || 5000;
+// server.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 
 require("dotenv").config();
 const express = require("express");
@@ -232,44 +307,47 @@ const bodyParser = require("body-parser");
 const app = express();
 const server = http.createServer(app);
 
-// ✅ Fix CORS Issues
+// ✅ Set Allowed Frontend URLs
 const allowedOrigins = [
-  "https://event-management-mern-wfcr.vercel.app", // ✅ Your Frontend URL
-  "https://event-management-mern-fawn.vercel.app", // ✅ Your Backend API URL
+  "https://event-management-mern-wfcr.vercel.app", // ✅ Your Frontend
+  "https://event-management-mern-fawn.vercel.app", // ✅ Your Backend
 ];
 
+// ✅ Fix CORS Issues
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", allowedOrigins.join(","));
+// ✅ Handle Preflight Requests (OPTIONS)
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header(
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization, X-Requested-With"
   );
   res.header("Access-Control-Allow-Credentials", "true");
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
+  return res.sendStatus(200);
 });
 
-// ✅ Use Body Parser (Same as Working Backend)
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // ✅ Connect to MongoDB
 connectDB();
 
-// ✅ Test Route to Check Deployment
+// ✅ Test Route
 app.get("/", (req, res) => {
   res.send("Hello from backend! 🚀 WebSockets are working.");
 });
@@ -281,9 +359,12 @@ const eventRoutes = require("./routes/eventRoutes");
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 
-// ✅ WebSockets (Allow CORS)
+// ✅ WebSockets with CORS Fix
 const io = new Server(server, {
-  cors: { origin: allowedOrigins, methods: ["GET", "POST"] },
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+  },
 });
 
 io.on("connection", (socket) => {
