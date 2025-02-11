@@ -25,13 +25,15 @@ const io = new Server(server, {
 connectDB();
 
 // ✅ Apply CORS Middleware
-app.use(
-  cors({
-    origin:
-      process.env.FRONTEND_URL ||
-      "https://event-management-mern-wfcr.vercel.app/",
-  })
-);
+// app.use(
+//   cors({
+//     origin:
+//       process.env.FRONTEND_URL ||
+//       "https://event-management-mern-wfcr.vercel.app/",
+//   })
+// );
+
+app.use(cors());
 app.use(express.json());
 
 // ✅ Test Route to Check Deployment
