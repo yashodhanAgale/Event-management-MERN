@@ -25,10 +25,10 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <Link href="/login" className="mr-4">
+            <Link to="/login" className="mr-4">
               Login
             </Link>
-            <Link href="/register" className="bg-green-500 px-3 py-1 rounded">
+            <Link to="/register" className="bg-green-500 px-3 py-1 rounded">
               Register
             </Link>
           </>
