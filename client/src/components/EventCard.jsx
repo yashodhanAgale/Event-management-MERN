@@ -24,6 +24,26 @@ const EventCard = ({ event }) => {
     return () => socket.off("updateAttendeeCount");
   }, []);
 
+  // const handleJoinEvent = async () => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     const { data } = await axios.post(
+  //       `${API_URL}/api/events/${event._id}/join`,
+  //       {},
+  //       { headers: { Authorization: `Bearer ${token}` } }
+  //     );
+
+  //     setHasJoined(true);
+  //     socket.emit("joinEvent", {
+  //       eventId: event._id,
+  //       count: data.attendees.length,
+  //     }); // Send correct count
+  //     navigate(0);
+  //   } catch (error) {
+  //     alert(error.response?.data?.message || "Failed to join event");
+  //   }
+  // };
+
   const handleJoinEvent = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -33,12 +53,14 @@ const EventCard = ({ event }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setHasJoined(true);
+      setHasJoined(true); // ✅ Update button immediately
+      setAttendeeCount((prev) => prev + 1); // ✅ Update count immediately
+
+      // Emit event so other users get real-time updates
       socket.emit("joinEvent", {
         eventId: event._id,
-        count: data.attendees.length,
-      }); // Send correct count
-      navigate(0);
+        count: attendeeCount + 1,
+      });
     } catch (error) {
       alert(error.response?.data?.message || "Failed to join event");
     }
