@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const socket = io("https://event-management-mern-qbw3.onrender.com"); // Replace with your backend URL
 
 const EventCard = ({ event }) => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const API_URL = import.meta.env.VITE_API_URL;
   const [attendeeCount, setAttendeeCount] = useState(event.attendees.length);
@@ -36,6 +38,7 @@ const EventCard = ({ event }) => {
         eventId: event._id,
         count: data.attendees.length,
       }); // Send correct count
+      navigate(0);
     } catch (error) {
       alert(error.response?.data?.message || "Failed to join event");
     }
