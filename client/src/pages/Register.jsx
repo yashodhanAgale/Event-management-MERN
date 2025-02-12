@@ -37,6 +37,7 @@ const Register = () => {
       >
         <h2 className="text-2xl font-bold mb-4">Register</h2>
         <input
+          required
           type="text"
           name="name"
           placeholder="Name"
@@ -44,6 +45,7 @@ const Register = () => {
           className="w-full p-2 border rounded mb-2"
         />
         <input
+          required
           type="email"
           name="email"
           placeholder="Email"
@@ -51,6 +53,7 @@ const Register = () => {
           className="w-full p-2 border rounded mb-2"
         />
         <input
+          required
           type="password"
           name="password"
           placeholder="Password"

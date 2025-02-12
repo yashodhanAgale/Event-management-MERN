@@ -35,6 +35,7 @@ const Login = () => {
       >
         <h2 className="text-2xl font-bold mb-4">Login</h2>
         <input
+          required
           type="email"
           name="email"
           placeholder="Email"
@@ -42,6 +43,7 @@ const Login = () => {
           className="w-full p-2 border rounded mb-2"
         />
         <input
+          required
           type="password"
           name="password"
           placeholder="Password"
